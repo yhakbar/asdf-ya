@@ -2,7 +2,6 @@
 
 # asdf-ya [![Build](https://github.com/yhakbar/asdf-ya/actions/workflows/build.yml/badge.svg)](https://github.com/yhakbar/asdf-ya/actions/workflows/build.yml) [![Lint](https://github.com/yhakbar/asdf-ya/actions/workflows/lint.yml/badge.svg)](https://github.com/yhakbar/asdf-ya/actions/workflows/lint.yml)
 
-
 [ya](https://github.com/yhakbar/ya) plugin for the [asdf version manager](https://asdf-vm.com).
 
 </div>
@@ -16,18 +15,13 @@
 
 # Dependencies
 
-**TODO: adapt this section**
-
 - `bash`, `curl`, `tar`: generic POSIX utilities.
-- `SOME_ENV_VAR`: set this environment variable in your shell config to load the correct version of tool x.
 
 # Install
 
 Plugin:
 
 ```shell
-asdf plugin add ya
-# or
 asdf plugin add ya https://github.com/yhakbar/asdf-ya.git
 ```
 
