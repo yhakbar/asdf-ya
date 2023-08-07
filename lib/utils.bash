@@ -3,8 +3,10 @@
 set -euo pipefail
 
 GH_REPO="https://github.com/yhakbar/ya"
-TOOL_NAME="ya"
-TOOL_TEST="ya --version"
+export TOOL_NAME="ya"
+export TOOL_TEST="ya --version"
+export SECONDARY_TOOL_NAME="yadayada"
+export SECONDARY_TOOL_TEST="yadayada --version"
 
 fail() {
 	echo -e "asdf-$TOOL_NAME: $*"
@@ -32,23 +34,26 @@ list_all_versions() {
 }
 
 download_release() {
-	local version filename url
+	local version filename toolname url
 	version="$1"
 	filename="$2"
+	toolname="$3"
 
-	url="$GH_REPO/releases/download/${version}/${TOOL_NAME}-$(get_arch)-$(get_platform).tar.gz"
+	url="$GH_REPO/releases/download/${version}/${toolname}-$(get_arch)-$(get_platform).tar.gz"
 
-	echo "* Downloading $TOOL_NAME release $version..."
+	echo "* Downloading $toolname release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
 install_version() {
 	local install_type="$1"
 	local version="$2"
-	local install_path="${3%/bin}/bin"
+	local tool_name="$3"
+	local tool_test="$4"
+	local install_path="${5%/bin}/bin"
 
 	if [ "$install_type" != "version" ]; then
-		fail "asdf-$TOOL_NAME supports release installs only"
+		fail "asdf-$tool_name supports release installs only"
 	fi
 
 	(
@@ -56,13 +61,13 @@ install_version() {
 		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
 
 		local tool_cmd
-		tool_cmd="$(echo "$TOOL_TEST" | cut -d' ' -f1)"
+		tool_cmd="$(echo "$tool_test" | cut -d' ' -f1)"
 		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
 
-		echo "$TOOL_NAME $version installation was successful!"
+		echo "$tool_name $version installation was successful!"
 	) || (
 		rm -rf "$install_path"
-		fail "An error occurred while installing $TOOL_NAME $version."
+		fail "An error occurred while installing $tool_name $version."
 	)
 }
 
