@@ -5,6 +5,8 @@ set -euo pipefail
 GH_REPO="https://github.com/yhakbar/ya"
 TOOL_NAME="ya"
 TOOL_TEST="ya --version"
+YADAYADA_TOOL_NAME="yadayada"
+YADAYADA_TOOL_TEST="yadayada --version"
 
 fail() {
 	echo -e "asdf-$TOOL_NAME: $*"
@@ -40,6 +42,11 @@ download_release() {
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
+
+	url="$GH_REPO/releases/download/${version}/${YADAYADA_TOOL_NAME}-$(get_arch)-$(get_platform).tar.gz"
+
+	echo "* Downloading $YADAYADA_TOOL_NAME release $version..."
+	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
 }
 
 install_version() {
@@ -63,6 +70,20 @@ install_version() {
 	) || (
 		rm -rf "$install_path"
 		fail "An error occurred while installing $TOOL_NAME $version."
+	)
+
+	(
+		mkdir -p "$install_path"
+		cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
+
+		local tool_cmd
+		tool_cmd="$(echo "$YADAYADA_TOOL_TEST" | cut -d' ' -f1)"
+		test -x "$install_path/$tool_cmd" || fail "Expected $install_path/$tool_cmd to be executable."
+
+		echo "$YADAYADA_TOOL_NAME $version installation was successful!"
+	) || (
+		rm -rf "$install_path"
+		fail "An error occurred while installing $YADAYADA_TOOL_NAME $version."
 	)
 }
 
